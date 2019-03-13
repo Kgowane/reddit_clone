@@ -1,0 +1,60 @@
+<% content_for :top_content do %>
+  <div class="jumbotron">
+    <div class="container">
+      <h1>Welcome!</h1>
+      <p>Register to get started.</p>
+      <p>
+        <%= link_to 'Register', new_user_registration_path, class: 'btn btn-primary btn-lg' %>
+      </p>
+    </div>
+  </div>
+<% end %>
+<% if user_signed_in?  %>
+  <%= link_to 'Create A Post', new_post_path %><br>
+<% end %>
+
+<table>
+  <tr>
+    <th>POST ID</th>
+    <th>POST WEBLINK</th>
+    <th>POST TITLE</th>
+    <th>POST DESCRIPTION</th>
+    <th>DISPLAY POST</th>
+    <th>TOTAL UPVOTES</th>
+    <% if user_signed_in?  %>
+      <th>UPVOTE</th>
+    <% end %>
+    <th>TOTAL DOWNVOTES</th>
+    <% if user_signed_in?  %>
+      <th>DOWNVOTE</th>
+    <% end %>
+    <th>TOTAL VOTES</th>
+  </tr>
+  <% @posts.each do |post| %>
+
+    <tr>
+      <td><%= post.id %></td>
+      <td><%= post.weblink %></td>
+      <td><%= post.title %></td>
+      <td><%= post.description %></td>
+      <td><%= link_to 'show', post_path(id: post.id) %></td>
+      <td><%= post.upvote %></td>
+      <% if user_signed_in?  %>
+        <td>
+            <% unless post.user == current_user %>
+              <%= button_to "Upvote #{post.title}", upvote_posts_path(post) %>
+            <% end %>
+        </td>
+      <% end %>
+        <td><%= post.downvote %></td>
+      <% if user_signed_in?  %>
+        <td>
+            <% unless post.user == current_user %>
+              <%= button_to "Downvote #{post.title}", downvote_posts_path(post) %>
+              <% end %>
+        </td>
+      <% end %>
+      <td><%= post.upvote + post.downvote %></td>
+    </tr>
+  <% end %>
+</table>

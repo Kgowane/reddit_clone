@@ -1,0 +1,65 @@
+<h1>Post Details:</h1>
+<p>POST ID: <%=@post.id%></p>
+<p>TITLE: <%=@post.title%></p>
+<p>WEBLINK:
+  <%=link_to "https://#{@post.weblink}", target: :_blank do %>
+    <%= "#{@post.weblink}" %>
+  <% end %>
+</p>
+<p>DESCRIPTION: <%=@post.description%></p>
+
+<%= link_to 'View All Posts', posts_path%><br><br>
+
+<% if user_signed_in? %>
+  <%= link_to 'Add Comment', new_post_comment_path(@post)%>
+<% end %>
+
+<table>
+  <tr>
+    <th>Comment Id</th>
+    <th>Comment</th>
+    <th>Total Upvotes</th>
+    <% if user_signed_in? %>
+      <th>Upvote</th>
+    <% end %>
+    <th>Total Downvote</th>
+    <% if user_signed_in? %>
+      <th>Downvote</th>
+    <% end %>
+    <th>Total Votes</th>
+  </tr>
+  <% if @post.comments.present? %>
+    <% @post.comments.each do |comment| %>
+      <tr>
+        <td><%= comment.id%></td>
+        <td><%= comment.comment%></td>
+        <td><%= comment.upvote %></td>
+        <td>
+          <% if user_signed_in? %>
+            <% unless comment.user == current_user %>
+              <%= button_to "Upvote #{comment.comment}", upvote_post_comments_path(@post, comment) %>
+              <% end %>
+          <% end %>
+        </td>
+        <td><%= comment.downvote %></td>
+        <td>
+          <% if user_signed_in? %>
+            <% unless comment.user == current_user %>
+              <%= button_to "Downvote #{comment.comment}", downvote_post_comments_path(@post, comment) %>
+            <% end %>
+          <% end %>
+        </td>
+        <td><%= comment.upvote + comment.downvote %></td>
+      </tr>
+    <% end %>
+  <% else %>
+    <td>-</td>
+    <td>No Comments Yet!</td>
+    <td>-</td>
+    <td>Not Available</td>
+    <td>-</td>
+    <td>Not Available</td>
+    <td>-</td>
+  <% end %>
+
+</table>
